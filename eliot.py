@@ -24,17 +24,7 @@ class EliotBot:
     def __init__(self):
         self._heat = 0 # 0-100. 100 triggers MELTDOWN state.
         self._state = EState.DEFAULT
-        self.defaultBag = BagOfPhrases([['I don\'t understand the question.',
-                                         'All of the women on The Apprentice flirted with me -- consciously or unconsciously. That\'s to be expected.',
-                                         'You have to think anyway, so why not think big?',
-                                         'Anyone who thinks my story is anywhere near over is sadly mistaken.'],
-                                         ['Perhaps it\'s time America was run like a business.',
-                                         'Part of the beauty of me is that I am very rich.',
-                                         'When I think I\'m right, nothing bothers me.'],
-                                         ['Every time you walk down the street people are screaming, \"You\'re fired!\"',
-                                         'I had some beautiful pictures taken in which I had a big smile on my face.  I looked happy, I looked content, I looked like a very nice person, which in theory I am.',
-                                         'Well, someone\'s doing the raping, Don! I mean, somebody\'s doing it. Who\'s doing the raping? Who\'s doing the raping?!']
-                                       ])
+        self.defaultBag = BagOfPhrases(30, 'default.txt')
 
     def run(self):
         while(1):
