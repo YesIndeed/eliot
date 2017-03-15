@@ -1,4 +1,3 @@
-from enum import Enum
 from bagofphrases import BagOfPhrases
 
 '''
@@ -13,17 +12,10 @@ insecurity. But still, he'd like to hear what you think*.
     sure why either.
 '''
 
-class EState(Enum):
-    DEFAULT = 0
-    MAFIA = 1
-    MEDIA = 2
-    GIVE = 3
-    MELTDOWN = 4
-
 class EliotBot:
     def __init__(self):
         self._heat = 0 # 0-100. 100 triggers MELTDOWN state.
-        self._state = EState.DEFAULT
+        self._state = 'default'
         self.defaultBag = BagOfPhrases(30, 'default.txt')
 
     def run(self):
