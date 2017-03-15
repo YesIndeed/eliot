@@ -17,6 +17,7 @@ class BagOfPhrases:
             content = content.split('---')
             # Populate the phrases matrix indexed by [severity level][phrase idx]
             self.phrases = [filter(None, bag.split('\n')) for bag in content]
+            self.max_heat = heat.len(phrases)*heat
 
     def get(self, heat=0):
         idx = int(math.ceil(heat%self.max_heat/HEAT_VAL))
