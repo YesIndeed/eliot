@@ -1,5 +1,5 @@
 from bagofphrases import BagOfPhrases
-
+from scriptedconvo import ScriptedConvo
 '''
 Eliot is an aspiring politician. Though a friend to many, he has many
 pain points and anger management issues that he hasn't quite worked
@@ -12,17 +12,43 @@ insecurity. But still, he'd like to hear what you think*.
     sure why either.
 '''
 
+CULT_WORDS = ['cult', 'demon', 'devil', 'dark ones']
+
 class EliotBot:
     def __init__(self):
         self._heat = 0 # 0-100. 100 triggers MELTDOWN state.
         self._state = 'default'
-        self.defaultBag = BagOfPhrases(30, 'default.txt')
+        self.defaultBag = BagOfPhrases(30, 'dialog/default.txt')
+        self.defaultConvo = ScriptedConvo(30, 'dialog/default.txt')
+
+    '''
+    Handle state transitions. Currently hardcoded. Transitions should
+    have a notion of precedence.
+    '''
+    def handle_state(self, s):
+        if 'conversation' in s:
+            print 'State transition to convo'
+            self._state = 'convo'
+        elif 'default' in s:
+            print 'State transition to default'
+
+    def handle_heat(self, s):
+        if any(word in s for word in CULT_WORDS):
+            self._heat += 50
+        elif self._state == 'default':
+            # For debug purposes.
+            self._heat += 5
 
     def run(self):
         while(1):
             s = raw_input(">> ")
-            self._heat += 10
-            print(self.defaultBag.get(self._heat))
+            # Update internal state according to input.
+            self.handle_state(s)
+            self.handle_heat(s)
+            if self._state == 'convo':
+                print(self.defaultConvo.next(self._heat))
+            else:
+                print(self.defaultBag.get(self._heat))
 
 def main():
     e = EliotBot()
