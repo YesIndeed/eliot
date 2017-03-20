@@ -17,7 +17,7 @@ CULT_WORDS = ['cult', 'demon', 'devil', 'dark ones']
 class EliotBot:
     def __init__(self):
         self._heat = 0 # 0-100. 100 triggers MELTDOWN state.
-        self._state = 'default'
+        self._state = 'convo'
         self.defaultBag = BagOfPhrases(30, 'dialog/default.txt')
         self.defaultConvo = ScriptedConvo(30, 'dialog/convo.txt')
         self.cultConvo = ScriptedConvo(30, 'dialog/cult.txt')
@@ -47,16 +47,16 @@ class EliotBot:
 
     def run(self):
         while(1):
-            s = raw_input(">> ")
-            # Update internal state according to input.
-            self.handle_state(s)
-            self.handle_heat(s)
             if self._state == 'convo':
                 print(self.defaultConvo.next(self._heat))
             elif self._state == 'cult':
                 print(self.cultConvo.next(self._heat))
             else:
                 print(self.defaultBag.get(self._heat))
+            s = raw_input(">> ")
+            # Update internal state according to input.
+            self.handle_state(s)
+            self.handle_heat(s)
 
 def main():
     e = EliotBot()
