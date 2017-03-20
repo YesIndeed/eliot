@@ -27,14 +27,15 @@ class EliotBot:
     Transitions should have a notion of precedence.
     '''
     def handle_state(self, s):
-        if any(word in s for word in CULT_WORDS):
-            print '(state transition to cult)'
+        if any(word in s for word in CULT_WORDS) and not self._state == 'cult':
+            #print 'state transition to cult'
             self._state = 'cult'
-        elif 'conversation' in s or 'convo' in s:
-            print '(state transition to convo)'
+        elif 'conversation' in s or 'convo' in s and not self._state == 'convo':
+            #print 'state transition to convo'
             self._state = 'convo'
-        elif 'default' in s:
-            print '(state transition to default)'
+        elif 'default' in s and not self._state == 'default':
+            #print 'State transition to default'
+            self._state = 'default'
 
     def handle_heat(self, s):
         if any(word in s for word in CULT_WORDS):
