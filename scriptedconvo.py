@@ -18,13 +18,13 @@ class ScriptedConvo:
             self.phrases = [filter(None, bag.split('\n')) for bag in content]
             # Store current indices for progress made in each script.
             self.indices = [0 for bag in content]
-            self.max_heat = len(self.phrases)*heat
+            self.max_heat_level = len(self.phrases)-1
 
     '''
     Return if we have reached the end of a conversation for a given severity.
     '''
     def end_of_convo(self, heat=0):
-        heat_level = int(math.ceil(heat%self.max_heat/HEAT_VAL))
+        heat_level = int(min(heat/HEAT_VAL, self.max_heat_level))
         curr_idx = self.indices[heat_level]
         return curr_idx >= len(self.phrases[heat_level])
 
@@ -36,7 +36,7 @@ class ScriptedConvo:
         out = ''
 
         # Check which severity level we are using.
-        heat_level = int(math.ceil(heat%self.max_heat/HEAT_VAL))
+        heat_level = int(min(heat/HEAT_VAL, self.max_heat_level))
         # Current index within appropriate conversation.
         curr_idx = self.indices[heat_level]
         # If we have not exhausted this conversation, get the next phrase
@@ -50,6 +50,6 @@ class ScriptedConvo:
     Reset the current index.
     '''
     def reset(self, heat=0, val=0):
-        heat_level = int(math.ceil(heat%self.max_heat/HEAT_VAL))
+        heat_level = int(min(heat/HEAT_VAL, self.max_heat_level))
         curr_idx = self.indices[heat_level]
         self.indices[heat_level] = val
