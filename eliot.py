@@ -19,22 +19,28 @@ class EliotBot:
         self._heat = 0 # 0-100. 100 triggers MELTDOWN state.
         self._state = 'default'
         self.defaultBag = BagOfPhrases(30, 'dialog/default.txt')
-        self.defaultConvo = ScriptedConvo(30, 'dialog/default.txt')
+        self.defaultConvo = ScriptedConvo(30, 'dialog/convo.txt')
+        self.cultConvo = ScriptedConvo(30, 'dialog/cult.txt')
 
     '''
-    Handle state transitions. Currently hardcoded. Transitions should
-    have a notion of precedence.
+    Handle state transitions. Currently hardcoded.
+    Transitions should have a notion of precedence.
     '''
     def handle_state(self, s):
-        if 'conversation' in s:
-            print 'State transition to convo'
+        if any(word in s for word in CULT_WORDS):
+            print 'state transition to cult'
+            self._state = 'cult'
+        elif 'conversation' in s or 'convo' in s:
+            print 'state transition to convo'
             self._state = 'convo'
         elif 'default' in s:
             print 'State transition to default'
 
     def handle_heat(self, s):
         if any(word in s for word in CULT_WORDS):
-            self._heat += 50
+            self._heat += 20
+        elif self._state == 'cult':
+            self._heat += 10
         elif self._state == 'default':
             # For debug purposes.
             self._heat += 5
@@ -47,6 +53,8 @@ class EliotBot:
             self.handle_heat(s)
             if self._state == 'convo':
                 print(self.defaultConvo.next(self._heat))
+            elif self._state == 'cult':
+                print(self.cultConvo.next(self._heat))
             else:
                 print(self.defaultBag.get(self._heat))
 
