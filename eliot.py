@@ -28,13 +28,13 @@ class EliotBot:
     '''
     def handle_state(self, s):
         if any(word in s for word in CULT_WORDS):
-            print 'state transition to cult'
+            print '(state transition to cult)'
             self._state = 'cult'
         elif 'conversation' in s or 'convo' in s:
-            print 'state transition to convo'
+            print '(state transition to convo)'
             self._state = 'convo'
         elif 'default' in s:
-            print 'State transition to default'
+            print '(state transition to default)'
 
     def handle_heat(self, s):
         if any(word in s for word in CULT_WORDS):
