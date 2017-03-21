@@ -38,6 +38,7 @@ class EliotBot:
             self._state = 'default'
 
     def handle_heat(self, s):
+        # update heat
         if any(word in s for word in CULT_WORDS):
             self._heat += 20
         elif self._state == 'cult':
@@ -45,9 +46,15 @@ class EliotBot:
         elif self._state == 'default':
             # For debug purposes.
             self._heat += 5
+        # return a value to indicate whether to exit
+        if self._heat >= 100:
+            return 'exit'
+        else:
+            return 'continue'
 
     def run(self):
-        while(1):
+        loop = 'continue'
+        while(loop == 'continue'):
             if self._state == 'convo':
                 print(self.defaultConvo.next(self._heat))
             elif self._state == 'cult':
@@ -57,7 +64,13 @@ class EliotBot:
             s = raw_input(">> ")
             # Update internal state according to input.
             self.handle_state(s)
-            self.handle_heat(s)
+            loop = self.handle_heat(s)
+            if loop == 'exit':
+                if self._state == 'cult':
+                    print('<A horrifying monster bursts from Eliot\'s chest and begins to devour you.>')
+                elif self._state == 'convo':
+                    print('I do belive this conversation is over.')
+                print('GAME OVER.')
 
 def main():
     e = EliotBot()
