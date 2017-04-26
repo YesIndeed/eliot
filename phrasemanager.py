@@ -26,8 +26,13 @@ class PhraseManager:
         with open(filepath, 'r') as content_file:
             content = content_file.read()
             content = content.strip()
+            content = list(filter(None, content.split('~~~')))
+            self.smalltalk = []
+            if len(content) == 2:
+                self.smalltalk = list(filter(None, content[1].split('\n')))
+
             # Extract individual severity bags
-            content = list(filter(None, content.split('---')))
+            content = list(filter(None, content[0].split('---')))
             # Create a phrase object for each phrase.
             self.phrases = [Phrase(phrase.strip()) for phrase in content]
             # All tags associated with phrases in this manager.
@@ -45,6 +50,9 @@ class PhraseManager:
                 candidates.add(p)
         if candidates:
             return random.sample(candidates, 1)[0].phrase
+        # If smalltalk is non-empty, choose a smalltalk sentence.
+        if self.smalltalk:
+            return random.sample(self.smalltalk, 1)[0]
         return random.sample(self.phrases, 1)[0].phrase
 
     def isPhraseRelevant(self, p, s):

@@ -19,7 +19,7 @@ CULT_WORDS = ['cult', 'demon', 'devil', 'dark ones']
 class EliotBot:
     def __init__(self):
         self._heat = 0 # 0-100. 100 triggers MELTDOWN state.
-        self._interest = 100
+        self._interest = 70
         self._state = 'intro'
         with open('states.txt', 'r') as content_file:
             content = content_file.read()
@@ -34,10 +34,10 @@ class EliotBot:
         for state in self.states:
             manager = self.phraseManagers[state]
             if any(tag in s for tag in manager.tags):
-               self._interest += 10
+               self._interest = 70
                return state
         self._interest -= 5
-        if self._state == 'intro' or self._interest < 30 and random.random() > .5:
+        if self._state == 'intro' or self._interest < 40 and random.random() > .5:
             return 'smalltalk'
         return self._state
 
