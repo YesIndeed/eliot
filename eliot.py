@@ -32,8 +32,8 @@ class EliotBot:
         for state in self.states:
             manager = self.phraseManagers[state]
             if any(tag in s for tag in manager.tags):
-               self._state = state
-               break
+               return state
+        return 'intro'
 
     def get_phrase(self, state, s):
         return self.phraseManagers[state].get(s)
