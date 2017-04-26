@@ -19,7 +19,7 @@ class EliotBot:
     def __init__(self):
         self._heat = 0 # 0-100. 100 triggers MELTDOWN state.
         self._state = 'intro'
-        with open(filepath, 'r') as content_file:
+        with open('states.txt', 'r') as content_file:
             content = content_file.read()
             # Extract individual severity bags
             states = list(filter(None, content.split(' ')))
@@ -29,12 +29,14 @@ class EliotBot:
     def handle_state(self, s):
         # loop over all the states
         # if there is a tag that coincides, switch to that state.
+        for state in self.states:
+            manager = phraseManagers[state]
+            if any(tag in s for tag in manager.tags):
+               self._state = state
+               break
 
     def get_phrase(self, state, s):
-        # get the phrase from an associated state
-        # return
-        # if no such phrase exists, return empty string(?)
-        return ''
+        return self.phraseManagers[state].get(s)
 
     def run(self):
         loop = 'continue'
@@ -42,7 +44,7 @@ class EliotBot:
             s = raw_input(">> ")
             # Update internal state according to input.
             self.handle_state(s)
-            self.get_phrase(s)
+            print(self.get_phrase(s))
 
             if loop == 'exit':
                 if self._state == 'cult':

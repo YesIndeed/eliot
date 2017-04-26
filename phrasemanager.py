@@ -29,6 +29,12 @@ class PhraseManager:
             content = list(filter(None, content.split('---')))
             # Create a phrase object for each phrase.
             self.phrases = [Phrase(phrase) for phrase in content]
+            # All tags associated with phrases in this manager.
+            self.tags = set()
+            # Populate all tags.
+            for phrase in self.phrases:
+                for t in phrase.tags:
+                    self.tags.add(tags)
 
     def get(self, s=''):
         # candidate output phrases
