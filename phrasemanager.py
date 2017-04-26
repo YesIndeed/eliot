@@ -25,16 +25,17 @@ class PhraseManager:
         # self.max_heat = len(words)*HEAT_VAL
         with open(filepath, 'r') as content_file:
             content = content_file.read()
+            content = content.strip()
             # Extract individual severity bags
             content = list(filter(None, content.split('---')))
             # Create a phrase object for each phrase.
-            self.phrases = [Phrase(phrase) for phrase in content]
+            self.phrases = [Phrase(phrase.strip()) for phrase in content]
             # All tags associated with phrases in this manager.
             self.tags = set()
             # Populate all tags.
             for phrase in self.phrases:
                 for t in phrase.tags:
-                    self.tags.add(tags)
+                    self.tags.add(t)
 
     def get(self, s=''):
         # candidate output phrases

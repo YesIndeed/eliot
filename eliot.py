@@ -22,9 +22,9 @@ class EliotBot:
         with open('states.txt', 'r') as content_file:
             content = content_file.read()
             # Extract individual severity bags
-            states = list(filter(None, content.split(' ')))
+            self.states = list(filter(None, content.split('\n'))
             # Instantiate a phrase manager for each state.
-            self.phraseManagers = {state:PhraseManager('dialog/%s.tp' % state) for state in states}
+            self.phraseManagers = {state:PhraseManager('dialog/%s.tp' % state) for state in self.states}
 
     def handle_state(self, s):
         # loop over all the states
@@ -41,7 +41,7 @@ class EliotBot:
     def run(self):
         loop = 'continue'
         while(loop == 'continue'):
-            s = raw_input(">> ")
+            s = input(">> ")
             # Update internal state according to input.
             self.handle_state(s)
             print(self.get_phrase(s))
