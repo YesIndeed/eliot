@@ -31,6 +31,10 @@ class EliotBot:
             self.phraseManagers = {state:PhraseManager('dialog/%s.tp' % state) for state in self.states}
 
     def handle_state(self, s):
+        # enter and then don't leave the meltdown state
+        if self._state == 'meltdown' or self._heat >= 50:
+            return 'metldown'
+
         # loop over all the states
         # if there is a tag that coincides, switch to that state.
         for state in self.states:
