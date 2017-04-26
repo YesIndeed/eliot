@@ -33,7 +33,7 @@ class EliotBot:
     def handle_state(self, s):
         # enter and then don't leave the meltdown state
         if self._state == 'meltdown' or self._heat >= 50:
-            return 'metldown'
+            return 'meltdown'
 
         # loop over all the states
         # if there is a tag that coincides, switch to that state.
@@ -60,20 +60,22 @@ class EliotBot:
 
     def run(self):
         print(self.get_phrase(self._state,'debug'))
-        loop = 'continue'
-        while(loop == 'continue'):
+        while(self._state != 'meltdown'):
             s = input(">> ")
             # Update internal state according to input.
-            self._state = self.handle_state(s)
-            print(self.get_phrase(self._state,s))
             self.handle_heat(s)
+            self._state = self.handle_state(s)
+            if self._state == 'meltdown':
+                continue
+            print(self.get_phrase(self._state,s))
 
-            if loop == 'exit':
-                if self._state == 'cult':
-                    print('<A horrifying monster bursts from Eliot\'s chest and begins to devour you.>')
-                elif self._state == 'convo':
-                    print('I do belive this conversation is over.')
-                print('GAME OVER.')
+        with open('dialog/meltdown.convo') as f:
+            for line in f:
+                print(line,end='')
+                s = input(">> ")
+            print('<A horrifying monster bursts from Eliot\'s chest and begins to devour you.>')
+            print('GAME OVER.')
+
 
 def main():
     e = EliotBot()

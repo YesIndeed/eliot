@@ -53,3 +53,6 @@ class ScriptedConvo:
         heat_level = int(min(heat/HEAT_VAL, self.max_heat_level))
         curr_idx = self.indices[heat_level]
         self.indices[heat_level] = val
+
+    def convo(self, filepath):
+        
