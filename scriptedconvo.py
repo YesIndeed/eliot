@@ -32,7 +32,7 @@ class ScriptedConvo:
     Find the appropriate script and return the next line in that conversation.
     By default, if the end of a script has been reached, return an empty string.
     '''
-    def next(self, heat=0):
+    def get(self, heat=0):
         out = ''
 
         # Check which severity level we are using.
