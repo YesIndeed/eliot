@@ -22,7 +22,7 @@ class EliotBot:
         with open('states.txt', 'r') as content_file:
             content = content_file.read()
             # Extract individual severity bags
-            self.states = list(filter(None, content.split('\n'))
+            self.states = list(filter(None, content.split('\n')))
             # Instantiate a phrase manager for each state.
             self.phraseManagers = {state:PhraseManager('dialog/%s.tp' % state) for state in self.states}
 
@@ -30,7 +30,7 @@ class EliotBot:
         # loop over all the states
         # if there is a tag that coincides, switch to that state.
         for state in self.states:
-            manager = phraseManagers[state]
+            manager = self.phraseManagers[state]
             if any(tag in s for tag in manager.tags):
                self._state = state
                break
@@ -44,7 +44,7 @@ class EliotBot:
             s = input(">> ")
             # Update internal state according to input.
             self.handle_state(s)
-            print(self.get_phrase(s))
+            print(self.get_phrase(self._state,s))
 
             if loop == 'exit':
                 if self._state == 'cult':
