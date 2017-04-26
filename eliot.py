@@ -1,6 +1,7 @@
 from phrasemanager import PhraseManager
 import os
 import random
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 '''
 Eliot is an aspiring politician. Though a friend to many, he has many
@@ -21,6 +22,7 @@ class EliotBot:
         self._heat = 0 # 0-100. 100 triggers MELTDOWN state.
         self._interest = 70
         self._state = 'intro'
+        self.sia = SentimentIntensityAnalyzer()
         with open('states.txt', 'r') as content_file:
             content = content_file.read()
             # Extract individual severity bags
@@ -41,17 +43,26 @@ class EliotBot:
             return 'smalltalk'
         return self._state
 
+    def handle_heat(self, s):
+        # analyze the sentiment of a sentence
+        ss = self.sia.polarity_scores(s)
+        self._heat += 10 * ss['neg']
+        self._heat += 5 * ss['neu']
+        print('heat: %i' % self._heat) # debug
+        # TODO: railroad the user into meltdown convo when heat >= 50
+
     def get_phrase(self, state, s):
         return self.phraseManagers[state].get(s)
 
     def run(self):
-        print(self.get_phrase(self._state,''))
+        print(self.get_phrase(self._state,'debug'))
         loop = 'continue'
         while(loop == 'continue'):
             s = input(">> ")
             # Update internal state according to input.
             self._state = self.handle_state(s)
             print(self.get_phrase(self._state,s))
+            self.handle_heat(s)
 
             if loop == 'exit':
                 if self._state == 'cult':
