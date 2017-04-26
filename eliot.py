@@ -1,5 +1,6 @@
 from phrasemanager import PhraseManager
 import os
+import random
 
 '''
 Eliot is an aspiring politician. Though a friend to many, he has many
@@ -18,6 +19,7 @@ CULT_WORDS = ['cult', 'demon', 'devil', 'dark ones']
 class EliotBot:
     def __init__(self):
         self._heat = 0 # 0-100. 100 triggers MELTDOWN state.
+        self._interest = 100
         self._state = 'intro'
         with open('states.txt', 'r') as content_file:
             content = content_file.read()
@@ -32,18 +34,23 @@ class EliotBot:
         for state in self.states:
             manager = self.phraseManagers[state]
             if any(tag in s for tag in manager.tags):
+               self._interest += 10
                return state
-        return 'intro'
+        self._interest -= 5
+        if self._state == 'intro' or self._interest < 30 and random.random() > .5:
+            return 'smalltalk'
+        return self._state
 
     def get_phrase(self, state, s):
         return self.phraseManagers[state].get(s)
 
     def run(self):
+        print(self.get_phrase(self._state,''))
         loop = 'continue'
         while(loop == 'continue'):
             s = input(">> ")
             # Update internal state according to input.
-            self.handle_state(s)
+            self._state = self.handle_state(s)
             print(self.get_phrase(self._state,s))
 
             if loop == 'exit':
