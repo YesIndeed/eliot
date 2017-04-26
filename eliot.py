@@ -1,5 +1,6 @@
-from bagofphrases import BagOfPhrases
-from scriptedconvo import ScriptedConvo
+from phrasemanager import PhraseManager
+import os
+
 '''
 Eliot is an aspiring politician. Though a friend to many, he has many
 pain points and anger management issues that he hasn't quite worked
@@ -17,54 +18,32 @@ CULT_WORDS = ['cult', 'demon', 'devil', 'dark ones']
 class EliotBot:
     def __init__(self):
         self._heat = 0 # 0-100. 100 triggers MELTDOWN state.
-        self._state = 'convo'
-        self.defaultBag = BagOfPhrases(30, 'dialog/default.txt')
-        self.defaultConvo = ScriptedConvo(30, 'dialog/convo.txt')
-        self.cultConvo = ScriptedConvo(30, 'dialog/cult.txt')
+        self._state = 'intro'
+        with open(filepath, 'r') as content_file:
+            content = content_file.read()
+            # Extract individual severity bags
+            states = list(filter(None, content.split(' ')))
+            # Instantiate a phrase manager for each state.
+            self.phraseManagers = {state:PhraseManager('dialog/%s.tp' % state) for state in states}
 
-    '''
-    Handle state transitions. Currently hardcoded.
-    Transitions should have a notion of precedence.
-    '''
     def handle_state(self, s):
-        if any(word in s for word in CULT_WORDS) and not self._state == 'cult':
-            #print 'state transition to cult'
-            self._state = 'cult'
-        elif 'conversation' in s or 'convo' in s and not self._state == 'convo':
-            #print 'state transition to convo'
-            self._state = 'convo'
-        elif 'default' in s and not self._state == 'default':
-            #print 'State transition to default'
-            self._state = 'default'
+        # loop over all the states
+        # if there is a tag that coincides, switch to that state.
 
-    def handle_heat(self, s):
-        # update heat
-        if any(word in s for word in CULT_WORDS):
-            self._heat += 20
-        elif self._state == 'cult':
-            self._heat += 10
-        elif self._state == 'default':
-            # For debug purposes.
-            self._heat += 5
-        # return a value to indicate whether to exit
-        if self._heat >= 100:
-            return 'exit'
-        else:
-            return 'continue'
+    def get_phrase(self, state, s):
+        # get the phrase from an associated state
+        # return
+        # if no such phrase exists, return empty string(?)
+        return ''
 
     def run(self):
         loop = 'continue'
         while(loop == 'continue'):
-            if self._state == 'convo':
-                print(self.defaultConvo.next(self._heat))
-            elif self._state == 'cult':
-                print(self.cultConvo.next(self._heat))
-            else:
-                print(self.defaultBag.get(self._heat))
             s = raw_input(">> ")
             # Update internal state according to input.
             self.handle_state(s)
-            loop = self.handle_heat(s)
+            self.get_phrase(s)
+
             if loop == 'exit':
                 if self._state == 'cult':
                     print('<A horrifying monster bursts from Eliot\'s chest and begins to devour you.>')
