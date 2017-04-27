@@ -41,7 +41,7 @@ class EliotBot:
             interest = 100
             # If you're positive enough and don't mention cults, return to smalltalk.
             if ss['pos'] > 0.5 and ss['pos'] > ss['neg'] and not any(word in s.lower() for word in CULT_WORDS):
-                heat -= 10
+                self._heat -= 10
                 return 'smalltalk'
 
         # loop over all the states
