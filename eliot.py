@@ -1,27 +1,17 @@
 from phrasemanager import PhraseManager
 import os
+import sys
 import random
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-'''
-Eliot is an aspiring politician. Though a friend to many, he has many
-pain points and anger management issues that he hasn't quite worked
-through yet. He alternates between intense arrogance and crushing
-insecurity. But still, he'd like to hear what you think*.
-
-*   Unless it happens to be about his potential connection to the mafia**.
-**  Or if you're talking about the media***.
-*** Or the word "give," the 97th most common English word. We're not
-    sure why either.
-'''
-
-CULT_WORDS = ['cult', 'demon', 'devil', 'dark ones', ]
+CULT_WORDS = ['cult', 'demon', 'devil', 'dark ones', 'evil', 'darkness']
 
 class EliotBot:
-    def __init__(self):
+    def __init__(self, debug):
         self._heat = 0 # 0-100. 100 triggers MELTDOWN state.
         self._interest = 70
         self._state = 'intro'
+        self._debug = debug
         self.sia = SentimentIntensityAnalyzer()
         with open('states.txt', 'r') as content_file:
             content = content_file.read()
@@ -68,7 +58,8 @@ class EliotBot:
         if any(word in s for word in CULT_WORDS):
             self._heat += 10
             self._state = 'defensive'
-        print('heat: %i' % self._heat) # debug
+        if self._debug:
+            print('heat: %i' % self._heat) # debug
 
     def get_phrase(self, state, s):
         return self.phraseManagers[state].get(s)
@@ -100,8 +91,12 @@ class EliotBot:
             print('GAME OVER.')
 
 
-def main():
-    e = EliotBot()
+def main(argv):
+    debug = False
+    if len(sys.argv) == 2 and sys.argv[1] == '--debug':
+        debug = True
+
+    e = EliotBot(debug)
     e.run()
 
 if __name__ == "__main__": main()
