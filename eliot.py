@@ -46,11 +46,14 @@ class EliotBot:
 
         # loop over all the states
         # if there is a tag that coincides, switch to that state.
+        candidate_states = set()
         for state in self.states:
             manager = self.phraseManagers[state]
             if any(tag in s for tag in manager.tags):
                self._interest = 70
-               return state
+               candidate_states.add(state)
+        if candidate_states:
+            return random.sample(candidate_states, 1)[0]
         self._interest -= 5
 
         # If Eliot gets bored of conversation, he might default to making small talk.
